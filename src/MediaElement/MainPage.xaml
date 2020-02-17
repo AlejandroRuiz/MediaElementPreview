@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+    xmlns:vm="clr-namespace:MediaElement.ViewModels"
+    ios:Page.UseSafeArea="true"
+    mc:Ignorable="d"
+    x:Class="MediaElement.MainPage">
+    <ContentPage.BindingContext>
+        <vm:MainViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <StackLayout>
+            <MediaElement
+                x:Name="_mediaElement"
+                HeightRequest="200"
+                Aspect="{Binding Aspect}"
+                AutoPlay="{Binding AutoPlay}"
+                IsLooping="{Binding IsLooping}"
+                KeepScreenOn="{Binding KeepScreenOn}"
+                ShowsPlaybackControls="{Binding ShowsPlaybackControls}"
+                Source="{Binding Source}"
+                VerticalOptions="Start" />
+
+            <Button
+                BackgroundColor="Transparent"
+                Command="{Binding PlayRemoteVideoCommand}"
+                Text="&#x1F30F; Play Internet Video"
+                HorizontalOptions="CenterAndExpand" />
+            <Button
+                BackgroundColor="Transparent"
+                Command="{Binding PlayLocalVideoCommand}"
+                Text="&#x1F4F1; Play Local Video"
+                HorizontalOptions="CenterAndExpand" />
+
+            <StackLayout
+                Margin="20,0"
+                Orientation="Horizontal">
+                <Button
+                    BackgroundColor="Transparent"
+                    Command="{Binding PlayPauseCommand}"
+                    CommandParameter="{x:Reference _mediaElement}"
+                    Text="&#x25B6;&#xFE0F; Play"
+                    HorizontalOptions="CenterAndExpand">
+                    <Button.Triggers>
+                        <DataTrigger
+                            TargetType="Button"
+                            Binding="{Binding CurrentState, Source={x:Reference _mediaElement}}"
+                            Value="{x:Static MediaElementState.Playing}">
+                            <Setter
+                                Property="Text"
+                                Value="&#x23F8; Pause" />
+                        </DataTrigger>
+                        <DataTrigger
+                            TargetType="Button"
+                            Binding="{Binding CurrentState, Source={x:Reference _mediaElement}}"
+                            Value="{x:Static MediaElementState.Buffering}">
+                            <Setter
+                                Property="IsEnabled"
+                                Value="False" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+                <Button
+                    BackgroundColor="Transparent"
+                    Command="{Binding StopCommand}"
+                    CommandParameter="{x:Reference _mediaElement}"
+                    Text="&#x23F9; Stop"
+                    HorizontalOptions="CenterAndExpand">
+                    <Button.Triggers>
+                        <DataTrigger
+                            TargetType="Button"
+                            Binding="{Binding CurrentState, Source={x:Reference _mediaElement}}"
+                            Value="{x:Static MediaElementState.Stopped}">
+                            <Setter
+                                Property="IsEnabled"
+                                Value="False" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </StackLayout>
+
+            <StackLayout
+                Margin="20,0"
+                Orientation="Horizontal">
+                <Label
+                    VerticalTextAlignment="Center"
+                    Text="Aspect:" />
+                <Picker
+                    ItemsSource="{Binding Aspects}"
+                    SelectedItem="{Binding Aspect}" />
+            </StackLayout>
+
+            <StackLayout
+                Margin="20,0"
+                Orientation="Horizontal">
+                <Label
+                    VerticalTextAlignment="Center"
+                    Text="AutoPlay:" />
+                <CheckBox
+                    IsChecked="{Binding AutoPlay}" />
+            </StackLayout>
+
+            <Label
+                Margin="20,0"
+                VerticalTextAlignment="Center"
+                Text="{Binding BufferingProgress, Source={x:Reference _mediaElement}, StringFormat='Buffering Progress: {0}%'}" />
+
+            <Label
+                Margin="20,0"
+                VerticalTextAlignment="Center"
+                Text="{Binding CurrentState, Source={x:Reference _mediaElement}, StringFormat='Current State: {0}'}" />
+
+            <Label
+                Margin="20,0"
+                VerticalTextAlignment="Center"
+                Text="{Binding Duration, Source={x:Reference _mediaElement}, StringFormat='Duration: {0}'}" />
+
+            <StackLayout
+                Margin="20,0"
+                Orientation="Horizontal">
+                <Label
+                    VerticalTextAlignment="Center"
+                    Text="Is Looping:" />
+                <CheckBox
+                    IsChecked="{Binding IsLooping}" />
+            </StackLayout>
+
+            <StackLayout
+                Margin="20,0"
+                Orientation="Horizontal">
+                <Label
+                    VerticalTextAlignment="Center"
+                    Text="Keep Screen On:" />
+                <CheckBox
+                    IsChecked="{Binding KeepScreenOn}" />
+            </StackLayout>
+
+            <Label
+                Margin="20,0"
+                VerticalTextAlignment="Center"
+                Text="{Binding Position, Source={x:Reference _mediaElement}, StringFormat='Position: {0}'}" />
+
+            <StackLayout
+                Margin="20,0"
+                Orientation="Horizontal">
+                <Label
+                    VerticalTextAlignment="Center"
+                    Text="Shows Playback Controls:" />
+                <CheckBox
+                    IsChecked="{Binding ShowsPlaybackControls}" />
+            </StackLayout>
+
+            <Label
+                Margin="20,0"
+                VerticalTextAlignment="Center"
+                Text="{Binding VideoHeight, Source={x:Reference _mediaElement}, StringFormat='Video Height: {0}'}" />
+
+            <Label
+                Margin="20,0"
+                VerticalTextAlignment="Center"
+                Text="{Binding VideoWidth, Source={x:Reference _mediaElement}, StringFormat='Video Width: {0}'}" />
+
+            <StackLayout
+                Margin="20,0,20,20"
+                Orientation="Horizontal">
+                <Label
+                    VerticalTextAlignment="Center"
+                    Text="Volume:" />
+                <Slider
+                    Maximum="1.0"
+                    Minimum="0.0"
+                    WidthRequest="200"
+                    Value="{Binding Volume, Source={x:Reference _mediaElement}}" />
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
